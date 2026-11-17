@@ -31,8 +31,26 @@ After you translated the above files into your language, please inform me by cre
  2. Install Microsoft Visual Studio 2015 / 2017.
  3. Open `LocaleEmulator.sln`.
  4. Perform Build action.
- 5. Clone and build the core libraries: https://github.com/xupefei/Locale-Emulator-Core
- 6. Copy LoaderDll.dll and LocaleEmulator.dll from Locale-Emulator-Core to Locale-Emulator build folder.
+ 5. Clone and build the core libraries: https://github.com/xupefei/Locale-Emulator-Core (archived; see below)
+ 6. Copy LoaderDll.dll and LocaleEmulator.dll next to LEProc.exe in the build output folder (for example `Build\Debug` or `Build\Release`).
+
+### Core DLLs ###
+
+`LoaderDll.dll` and `LocaleEmulator.dll` are not part of this repository. They are the native, x86-only
+injection/hooking core and live in the separate
+[Locale-Emulator-Core](https://github.com/xupefei/Locale-Emulator-Core) repository, which has been archived
+since April 2022. The managed solution here does not build them, so a fresh build has no core DLLs and
+`LEProc` shows the "Some of the core Dlls are missing" message.
+
+You can get them by:
+
+- building `LoaderDll` and `LocaleEmulator` (Win32 configuration) from Locale-Emulator-Core. That requires
+  Visual Studio 2013/2015 and the legacy WDK 7.1/8.0 and patched linker bundled in that repository; or
+- extracting them from an official Locale Emulator release (for example the 2.5.0.0 ZIP); or
+- copying them from an existing working Locale Emulator installation.
+
+Place both files next to `LEProc.exe`. They are 32-bit only: Locale Emulator does not support x64 or ARM64
+targets.
 
 ## License ##
 

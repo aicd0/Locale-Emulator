@@ -21,21 +21,6 @@ namespace LEProc
         {
             SystemHelper.DisableDPIScale();
 
-            try
-            {
-                Process.Start(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                        "LEUpdater.exe"),
-                    "schedule");
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(
-                    "Failed to start LEUpdater.exe.\r\n\r\n" + e.Message,
-                    "Locale Emulator Version " + GlobalHelper.GetLEVersion(),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
-
             if (!GlobalHelper.CheckCoreDLLs())
             {
                 MessageBox.Show(
