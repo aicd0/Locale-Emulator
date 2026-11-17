@@ -27,8 +27,13 @@ namespace LEProc
                         "LEUpdater.exe"),
                     "schedule");
             }
-            catch
+            catch (Exception e)
             {
+                MessageBox.Show(
+                    "Failed to start LEUpdater.exe.\r\n\r\n" + e.Message,
+                    "Locale Emulator Version " + GlobalHelper.GetLEVersion(),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
 
             if (!GlobalHelper.CheckCoreDLLs())
@@ -112,15 +117,19 @@ namespace LEProc
                         break;
 
                     default:
-                        if (File.Exists(Args[0]))
+                        if (EnsureFileExists(Args[0]))
                         {
                             RunWithDefaultProfile(Args[0]);
                         }
                         break;
                 }
             }
-            catch
+            catch (Exception e)
             {
+                MessageBox.Show(e.ToString(),
+                    "Locale Emulator Version " + GlobalHelper.GetLEVersion(),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -156,6 +165,9 @@ namespace LEProc
         {
             path = SystemHelper.EnsureAbsolutePath(path);
 
+            if (!EnsureFileExists(path))
+                return;
+
             var conf = path + ".le.config";
 
             if (!File.Exists(conf))
@@ -175,6 +187,9 @@ namespace LEProc
         {
             try
             {
+                if (!EnsureFileExists(absPath))
+                    return;
+
                 if (profile.RunAsAdmin && !SystemHelper.IsAdministrator())
                 {
                     ElevateProcess();
@@ -268,20 +283,30 @@ namespace LEProc
                 uint ret;
                 if ((ret = l.Start()) != 0)
                 {
-                    if (SystemHelper.IsAdministrator())
-                    {
-                        GlobalHelper.ShowErrorDebugMessageBox(commandLine, ret);
-                    }
-                    else
-                    {
-                        ElevateProcess();
-                    }
+                    GlobalHelper.ShowErrorDebugMessageBox(commandLine, ret);
                 }
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                MessageBox.Show(e.ToString(),
+                    "Locale Emulator Version " + GlobalHelper.GetLEVersion(),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
+        }
+
+        private static bool EnsureFileExists(string path)
+        {
+            if (File.Exists(path))
+                return true;
+
+            MessageBox.Show(
+                "The target file does not exist:\r\n" + path,
+                "Locale Emulator Version " + GlobalHelper.GetLEVersion(),
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+
+            return false;
         }
 
         private static void ElevateProcess()
@@ -296,8 +321,13 @@ namespace LEProc
                         "LEProc.exe"),
                     Args);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                MessageBox.Show(
+                    "Failed to restart Locale Emulator with administrator privileges.\r\n\r\n" + e.Message,
+                    "Locale Emulator Version " + GlobalHelper.GetLEVersion(),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
